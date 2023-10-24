@@ -1,0 +1,15 @@
+.headCol{
+    margin:0;
+    width: 33%;
+}
+
+.customTable{
+    width:75%;
+    background-color:#fafbfc;
+    
+}
+
+.tablecss{
+    border: 1px solid black;
+    border-collapse: collapse;
+}

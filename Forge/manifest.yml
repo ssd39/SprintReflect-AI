@@ -1,0 +1,77 @@
+modules:
+  jira:projectPage:
+    - key: sr-ai-panel
+      resource: react-resource
+      title: Reports - SprintReflect-AI
+      icon: resource:react-resource;logo.png
+      resolver:
+        function: panel-functions
+  jira:issueActivity:
+    - key: sprintreflect-ai-hello-world
+      function: main
+      title: SprintReflect-AI
+  trigger:
+    - key: on-issue-update
+      function: trigger
+      events:
+        - avi:jira:updated:issue
+      filter:
+        ignoreSelf: true
+  consumer:
+    - key: queue-consumer
+      queue: worker-publish
+      resolver:
+        function: consumer-function
+        method: worker-publish-listener
+    - key: queue-consumer1
+      queue: sprint-publish
+      resolver:
+        function: consumer-function
+        method: sprint-finish-listener
+    - key: queue-consumerx
+      queue: sprint-parse
+      resolver:
+        function: consumer-function
+        method: extract-sprint-listener
+  webtrigger:
+    - key: issue-survey-data
+      function: on-issue-survey-data
+    - key: issue-survey-summary
+      function: on-issue-survey-summary
+    - key: spint-final-summary
+      function: on-sprint-summary
+  function:
+    - key: panel-functions
+      handler: panel-functions.handler
+    - key: consumer-function
+      handler: consumer.handler
+    - key: trigger
+      handler: trigger.run
+    - key: on-sprint-summary
+      handler: webtrigger.onSprintSurveySummary
+    - key: on-issue-survey-data
+      handler: webtrigger.onIssueSurveyData
+    - key: on-issue-survey-summary
+      handler: webtrigger.onIssueSurveySummary
+    - key: main
+      handler: index.run
+app:
+  id: ari:cloud:ecosystem::app/1f41e6a9-d583-4466-a1c6-c64d1d5121d2
+permissions:
+  content:
+    styles:
+      - 'unsafe-inline'
+  scopes:
+    - read:jira-work
+    - storage:app
+  external:
+    images:
+      - s6.gifyu.com
+    fetch:
+      backend:
+        - sprint-reflect-ai.onrender.com
+resources:
+  - key: react-resource
+    path: sr-ai-panel/build
+    tunnel:
+      port: 3000
